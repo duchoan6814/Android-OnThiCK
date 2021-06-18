@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <EditText
+        android:id="@+id/edtMainId"
+        android:layout_width="115dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="19dp"
+        android:ems="10"
+        android:hint="id"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="@+id/spnMainSex"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/spnMainSex" />
+
+    <Spinner
+        android:id="@+id/spnMainSex"
+        android:layout_width="247dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/edtMainId"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edtMainName"
+        android:layout_width="233dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="17dp"
+        android:ems="10"
+        android:hint="Full name"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="@+id/edtMainSalary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/edtMainSalary" />
+
+    <EditText
+        android:id="@+id/edtMainSalary"
+        android:layout_width="115dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginEnd="19dp"
+        android:ems="10"
+        android:hint="salary"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/edtMainName"
+        app:layout_constraintTop_toBottomOf="@+id/spnMainSex" />
+
+    <Button
+        android:id="@+id/btnMainAdd"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="19dp"
+        android:text="Add"
+        app:layout_constraintBottom_toBottomOf="@+id/btnMainEdit"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnMainEdit" />
+
+    <Button
+        android:id="@+id/btnMainEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="41dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="41dp"
+        android:text="Edit"
+        app:layout_constraintEnd_toStartOf="@+id/btnMainFind"
+        app:layout_constraintStart_toEndOf="@+id/btnMainAdd"
+        app:layout_constraintTop_toBottomOf="@+id/edtMainName" />
+
+    <Button
+        android:id="@+id/btnMainFind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="46dp"
+        android:text="find"
+        app:layout_constraintBottom_toBottomOf="@+id/btnMainEdit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnMainEdit" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="0dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="20dp"
+        android:text="List employee"
+        android:textSize="20dp"
+        android:background="@drawable/button_submit_custom"
+        android:gravity="center"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnMainAdd" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcvMainListEmployee"
+        android:layout_width="412dp"
+        android:layout_height="488dp"
+        android:layout_marginTop="11dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+</androidx.constraintlayout.widget.ConstraintLayout>

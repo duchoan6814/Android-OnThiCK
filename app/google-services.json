@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "578524845488",
+    "project_id": "onthickandroidapp",
+    "storage_bucket": "onthickandroidapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:578524845488:android:7f91ec053a8aaa62c4f275",
+        "android_client_info": {
+          "package_name": "com.example.onthick"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "578524845488-q8jgu6u0c2mmgspop9bs1nh56ikmbka2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnXCrC-ld9nacVU8gN_nwWtXaRqoB2tGE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "578524845488-q8jgu6u0c2mmgspop9bs1nh56ikmbka2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
