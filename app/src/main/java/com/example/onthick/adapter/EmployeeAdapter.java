@@ -73,6 +73,10 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.ViewHo
             this.onActionEmployeeItem = onActionEmployeeItem;
 
             itemView.setOnClickListener(this);
+            // set action for button delete
+            btnDelete.setOnClickListener(v -> {
+                this.onActionEmployeeItem.onClickButtonDeleteItem(getAdapterPosition());
+            });
 
         }
 
@@ -84,5 +88,7 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.ViewHo
 
     public interface OnActionEmployeeItem {
         void onClickItem(int position);
+
+        void onClickButtonDeleteItem(int position);
     }
 }

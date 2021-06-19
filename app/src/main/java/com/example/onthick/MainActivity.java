@@ -74,6 +74,21 @@ public class MainActivity extends AppCompatActivity implements EmployeeAdapter.O
             }
         });
 
+//        add action for button edit
+        btnEdit.setOnClickListener(v -> {
+            try {
+                handleOnclickButtonEdit();
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Some thing wrong when process update employee.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // add action for button find
+        btnFind.setOnClickListener(v -> handleOnclickButtonFind());
+
+
 //        init sex in spiner
         sexs = new ArrayList<>();
         sexs.add("male");
@@ -86,6 +101,93 @@ public class MainActivity extends AppCompatActivity implements EmployeeAdapter.O
 //        request get list employee
         loadListEmployeeToRecycirleview();
 
+    }
+
+    private void handleOnclickButtonFind() {
+
+        if (edtId.getText().equals("")) {
+            loadListEmployeeToRecycirleview();
+        } else {
+            String url = "https://60ccdbde71b73400171f8a85.mockapi.io/employees/" + edtId.getText();
+            RequestQueue queue = Volley.newRequestQueue(this);
+
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, response -> {
+                handleWhenFindSuccess(response);
+            }, error -> {
+                Toast.makeText(this, "Some error when process edit employee. " + error,
+                        Toast.LENGTH_SHORT).show();
+            });
+
+            queue.add(stringRequest);
+        }
+
+
+    }
+
+    private void handleWhenFindSuccess(String response) {
+        clearListEmployee();
+        try {
+            passData(response);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void handleOnclickButtonEdit() throws JsonProcessingException {
+        // create Employ with data get some field in form
+        Employee employee = new Employee();
+        employee.setFullName(edtName.getText().toString());
+        employee.setSex(spnSex.getSelectedItemPosition() == 0 ? true : false);
+        employee.setSalary(Double.parseDouble(edtSalary.getText().toString()));
+
+        // parse java object to json
+        String jsonObjectString = objectMapper.writeValueAsString(employee);
+
+        // call api put employee
+        String url = "https://60ccdbde71b73400171f8a85.mockapi.io/employees/" + edtId.getText();
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, response -> {
+            handleActionWhenPutRequestCuccess();
+        }, error -> {
+            Toast.makeText(this, "Some error when process edit employee. " + error,
+                    Toast.LENGTH_SHORT).show();
+        }) {
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                try {
+                    return jsonObjectString == null ? null : jsonObjectString.getBytes("utf-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                String responseString = "";
+                if (response != null) {
+                    responseString = String.valueOf(response.statusCode);
+                }
+                return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+            }
+        };
+
+        queue.add(stringRequest);
+
+    }
+
+    private void handleActionWhenPutRequestCuccess() {
+        Toast.makeText(this, "update success employee",
+                Toast.LENGTH_SHORT).show();
+        clearListEmployee();
+        loadListEmployeeToRecycirleview();
     }
 
     private void handleOnclickButtonAdd() throws JsonProcessingException {
@@ -152,28 +254,36 @@ public class MainActivity extends AppCompatActivity implements EmployeeAdapter.O
 
         StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
 
-            passData(response);
+            try {
+                passData(response);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+
+            }
         }, error -> {
             Log.d("bbbbhon", "onCreate: " + error);
         });
         queue.add(request);
     }
 
-    private void passData(String response) {
+    private void passData(String response) throws JsonProcessingException {
+
         try {
             Employee[] employeeList = objectMapper.readValue(response, Employee[].class);
             for (Employee employee : employeeList) {
                 System.out.println(employee);
                 this.employees.add(employee);
             }
-
-            //        add data to recircleview
-            EmployeeAdapter employeeAdapter = new EmployeeAdapter(employees, this, this::onClickItem);
-            rcvListEmployee.setAdapter(employeeAdapter);
-            rcvListEmployee.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            Employee employee = objectMapper.readValue(response, Employee.class);
+            employees.add(employee);
         }
+
+
+        //        add data to recircleview
+        EmployeeAdapter employeeAdapter = new EmployeeAdapter(employees, this, this);
+        rcvListEmployee.setAdapter(employeeAdapter);
+        rcvListEmployee.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
     }
 
     @Override
@@ -188,5 +298,25 @@ public class MainActivity extends AppCompatActivity implements EmployeeAdapter.O
             spnSex.setSelection(1);
         }
 
+    }
+
+    @Override
+    public void onClickButtonDeleteItem(int position) {
+        String id = employees.get(position).getId();
+
+        String url = "https://60ccdbde71b73400171f8a85.mockapi.io/employees/" + id;
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url, response -> {
+            Toast.makeText(this, "Delete cuccess employee",
+                    Toast.LENGTH_SHORT).show();
+            clearListEmployee();
+            loadListEmployeeToRecycirleview();
+        }, error -> {
+            Toast.makeText(this, "Some error when process edit employee. " + error,
+                    Toast.LENGTH_SHORT).show();
+        });
+
+        queue.add(stringRequest);
     }
 }
