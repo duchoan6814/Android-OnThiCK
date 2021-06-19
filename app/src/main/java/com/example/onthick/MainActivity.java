@@ -10,10 +10,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.onthick.adapter.EmployeeAdapter;
@@ -22,6 +26,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -58,6 +63,17 @@ public class MainActivity extends AppCompatActivity implements EmployeeAdapter.O
         rcvListEmployee = findViewById(R.id.rcvMainListEmployee);
         employees = new ArrayList<>();
 
+//        add action for button add
+        btnAdd.setOnClickListener(v -> {
+            try {
+                handleOnclickButtonAdd();
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Some error when process adding employee.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+
 //        init sex in spiner
         sexs = new ArrayList<>();
         sexs.add("male");
@@ -68,6 +84,69 @@ public class MainActivity extends AppCompatActivity implements EmployeeAdapter.O
         spnSex.setAdapter(spinAdapter);
 
 //        request get list employee
+        loadListEmployeeToRecycirleview();
+
+    }
+
+    private void handleOnclickButtonAdd() throws JsonProcessingException {
+//        create Employ with data get some field in form
+        Employee employee = new Employee();
+        employee.setFullName(edtName.getText().toString());
+        employee.setSex(spnSex.getSelectedItemPosition() == 0 ? true : false);
+        employee.setSalary(Double.parseDouble(edtSalary.getText().toString()));
+
+//        parse java object to json
+        String jsonObjectString = objectMapper.writeValueAsString(employee);
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "https://60ccdbde71b73400171f8a85.mockapi.io/employees";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> {
+            handleWhenAddSuccess();
+        }, error -> {
+            Log.e("Employee", "have an error" + error);
+        }) {
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                try {
+                    return jsonObjectString == null ? null : jsonObjectString.getBytes("utf-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                String responseString = "";
+                if (response != null) {
+                    responseString = String.valueOf(response.statusCode);
+                }
+                return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+            }
+        };
+
+        queue.add(stringRequest);
+
+    }
+
+    private void handleWhenAddSuccess() {
+        Toast.makeText(this, "Add employee success.",
+                Toast.LENGTH_SHORT).show();
+        clearListEmployee();
+        loadListEmployeeToRecycirleview();
+    }
+
+    public void clearListEmployee() {
+        employees.clear();
+    }
+
+    private void loadListEmployeeToRecycirleview() {
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "https://60ccdbde71b73400171f8a85.mockapi.io/employees";
 
@@ -78,8 +157,6 @@ public class MainActivity extends AppCompatActivity implements EmployeeAdapter.O
             Log.d("bbbbhon", "onCreate: " + error);
         });
         queue.add(request);
-
-
     }
 
     private void passData(String response) {
